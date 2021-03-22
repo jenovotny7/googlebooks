@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Jumbotron, Container, Col, Form, Button, Card, CardColumns } from 'react-bootstrap';
 import { useMutation } from "@apollo/react-hooks";
+import { BOOKMARK } from "../utils/mutations";
 import Auth from "../utils/auth";
 import { searchGoogleBooks } from "../utils/API";
 import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
-import { SAVE_BOOK } from "../utils/mutations";
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -46,16 +46,19 @@ const SearchBooks = () => {
         image: book.volumeInfo.imageLinks?.thumbnail || "",
       }));
 
+
+
+
       setSearchedBooks(bookData);
       setSearchInput("");
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const [saveBook] = useMutation(SAVE_BOOK);
+  const [saveBook] = useMutation(BOOKMARK);
 
-  // create function to handle saving a book to our database
+  
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
@@ -66,8 +69,9 @@ const SearchBooks = () => {
     if (!token) {
       return false;
     }
+
     try {
-      const { input } = await saveBook({
+      const response = await saveBook({
         variables: { bookData: { ...bookToSave } },
       });
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
@@ -76,7 +80,10 @@ const SearchBooks = () => {
     }
   };
 
+
+
   
+
   return (
     <>
       <Jumbotron fluid className="text-light bg-dark">
