@@ -1,33 +1,39 @@
-import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
-import { useMutation } from '@apollo/react-hooks';
-import { LOGIN } from '../utils/mutations';
+
+import React, { useState } from "react";
+import { Form, Button, Alert } from "react-bootstrap";
+import { useMutation } from "@apollo/react-hooks";
+
+/* import  loginUser  from '../utils/API'; */
+import { LOGIN_U } from '../utils/mutations';
 import Auth from '../utils/auth';
 
+//Dont touch this code 
 const LoginForm = () => {
-  const [userFormData, setUserFormData] = useState({ email: '', password: '' });
+  const [userFormData, setUserFormData] = useState({ email: "", password: "" });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [login] = useMutation(LOGIN);
+  const [login] = useMutation(LOGIN_U);
 
+  //Dont touch this code 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
+  //Dont touch this code 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
+  //Dont touch this code 
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }
-
+// needs change
     try {
       const { data } = await login({
-        variables: { ...userFormData }
+        variables: { ...userFormData },
       });
 
       Auth.login(data.login.token);
@@ -36,17 +42,17 @@ const LoginForm = () => {
       setShowAlert(true);
     }
 
+// dont alter 
     setUserFormData({
-      username: '',
-      email: '',
-      password: '',
+      username: "",
+      email: "",
+      password: "",
     });
   };
 
 
 
-
-  //dont change
+  // dont alter 
   return (
     <>
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>

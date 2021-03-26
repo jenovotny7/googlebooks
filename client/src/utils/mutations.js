@@ -1,66 +1,62 @@
 import gql from "graphql-tag";
 
-export const LOGIN = gql`
+export const LOGIN_U = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
       user {
         _id
         username
+        email
       }
     }
   }
 `;
 
-
-
-export const ADD_READER = gql`
+export const ADD_U = gql`
   mutation addUser($username: String!, $email: String!, $password: String!) {
     addUser(username: $username, email: $email, password: $password) {
       token
       user {
         _id
         username
+        email
       }
     }
   }
 `;
 
-//Save Book
-export const BOOKMARK = gql`
-  mutation savedBooks($bookData: saveBookInput!) {
+export const SAVE_NOVEL = gql`
+  mutation savedBooks($bookData: inputType!) {
     savedBooks(bookData: $bookData) {
       _id
       username
       email
       bookCount
       savedBooks {
-        bookId
-        title
         authors
-        description
-        image
-        link
+          description
+          bookId
+          image
+          link
+          title
       }
     }
   }
 `;
 
-
-
-
-export const REMOVE_BOOK = gql`
+export const REMOVE_NOVEL = gql`
   mutation removeBook($bookId: String!) {
     removeBook(bookId: $bookId) {
       _id
       username
       savedBooks {
-        bookId
-        title
         authors
         description
+        bookId
         image
         link
+        title
       }
     }
   }

@@ -1,37 +1,49 @@
-import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
-import { useMutation } from '@apollo/react-hooks';
-import { ADD_READER } from '../utils/mutations';
-import Auth from '../utils/auth';
+import React, { useState } from "react";
+import { Form, Button, Alert } from "react-bootstrap";
 
+/*  removed import  createUser  from '../utils/API'; */
+
+//Added 
+import { ADD_U } from "../utils/mutations";
+import { useMutation } from "@apollo/react-hooks";
+import Auth from "../utils/auth";
+
+
+//dont change
 const SignupForm = () => {
-  const [addUser] = useMutation(ADD_READER);
-  // set initial form state
+
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
-  // set state for form validation
   const [validated] = useState(false);
-  // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
+  //added
+  const [addUser] = useMutation(ADD_U);
+
+
+  //dont change
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
+  //dont change
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    
+    //dont change
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }
 
+    // change
     try {
       const { data } = await addUser({
-        variables: { ...userFormData }
+        variables: { ...userFormData },
       });
+
+
 
       Auth.login(data.addUser.token);
     } catch (error) {
@@ -39,13 +51,17 @@ const SignupForm = () => {
       setShowAlert(true);
     }
 
+
+
     setUserFormData({
-      username: '',
-      email: '',
-      password: '',
+      username: "",
+      email: "",
+      password: "",
     });
   };
 
+
+  //dont change
   return (
     <>
       {/* This is needed for the validation functionality above */}

@@ -1,35 +1,43 @@
-const express = require("express");
-const { ApolloServer } = require("apollo-server-express");
-const path = require("path");
-const { typeDefs, resolvers } = require("./schemas");
-const db = require("./config/connection");
-const { authMiddleware } = require("./utils/auth");
-
-
-const app = express();
-const PORT = process.env.PORT || 3001;
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { ApolloProvider } from '@apollo/react-hooks';
+import ApolloClient from 'apollo-boost';
+import SearchBooks from './pages/SearchBooks';
+import SavedBooks from './pages/SavedBooks';
+import Navbar from './components/Navbar';
 
 
 
-// create a new Apollo server and pass in our schema data
-const server = new ApolloServer({typeDefs,resolvers,context: authMiddleware
+const client = new ApolloClient({
+  request: operation => {
+    const token = localStorage.getItem("id_token");
+
+    operation.setContext({
+      headers: {
+        authorization: token ? `Bearer ${token}` : "",
+      },
+    });
+  },
+  uri: "/graphql",
 });
 
 
-server.applyMiddleware({ app });
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/build")));
+function App() {
+  return (
+    <ApolloProvider client={client}>
+      <Router>
+        <>
+          <Navbar />
+          <Switch>
+            <Route exact path="/" component={SearchBooks} />
+            <Route exact path="/saved" component={SavedBooks} />
+            <Route render={() => <h1 className="display-2">Wrong page!</h1>} />
+          </Switch>
+        </>
+      </Router>
+    </ApolloProvider>
+  );
 }
 
-db.once("open", () => {
-  app.listen(PORT, () => {
-    console.log(`🌍 API server running on port ${PORT}!`);
-    // log where we can go to test our GQL API
-    console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
-  });
-});
+export default App;
